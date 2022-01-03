@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import cookies from 'nookies';
+import { useRouter } from 'next/router';
+
 // layout for page
 
 import Auth from "layouts/Auth.js";
@@ -9,6 +12,7 @@ export default function Register() {
   const [schoolResult, setSchoolResult] = useState([])
   const [schoolResultError, setSchoolResultError] = useState('')
   const [selectSchool, setSelectSchool] = useState([])
+  const router = useRouter()
   const fetchSchoolInfo = async () => {
     const response = await fetch(process.env.NEXT_PUBLIC_NEIS_API + `${schoolName}`)
     const data = await response.json()
@@ -46,7 +50,9 @@ export default function Register() {
       console.log(data);
       if (data.code === 400) {
             setSchoolResultError(data.message)
-          }
+      }
+      cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
+			router.replace('/admin/dashboard')
     } catch (error) {
       setSchoolResultError("서버 에러")
     }
