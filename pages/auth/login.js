@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 import cookies from 'nookies';
 
 // layout for page
@@ -14,6 +15,7 @@ export default function Login() {
 
   const [signinInfo, setSigninInfo] = useState(initialState)
   const [error, setError] = useState('')
+  const router = useRouter()
 
 
   const handleSubmit = async (event) => {
@@ -41,18 +43,17 @@ export default function Login() {
       if (data.code === 401) {
           setError(data.message)
         }
+      cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
+      const { plannedRoute } = cookies.get()
+      console.log(cookies.get());
+			const parsedPlannedRoute = plannedRoute && JSON.parse(plannedRoute)
 
-      // cookies.set(null, 'token', response.data.tokens.access.token, { path: '/' })
-			// const { plannedRoute } = cookies.get()
+			const plannedHrefRoute = parsedPlannedRoute
+				? parsedPlannedRoute.href
+				: '/admin/dashboard'
+			const plannedAsRoute = parsedPlannedRoute ? parsedPlannedRoute.as : '/admin/dashboard'
 
-			// const parsedPlannedRoute = plannedRoute && JSON.parse(plannedRoute)
-
-			// const plannedHrefRoute = parsedPlannedRoute
-			// 	? parsedPlannedRoute.href
-			// 	: '/dashboard'
-			// const plannedAsRoute = parsedPlannedRoute ? parsedPlannedRoute.as : '/dashboard'
-
-			// router.replace(plannedHrefRoute, plannedAsRoute);
+			router.replace(plannedHrefRoute, plannedAsRoute);
 	};
 
 	const handleInputChange = event => {
