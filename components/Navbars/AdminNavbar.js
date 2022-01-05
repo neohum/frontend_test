@@ -31,7 +31,7 @@ export default function Navbar(context) {
             href="#pablo"
             onClick={(e) => e.preventDefault()}
           >
-            Dashboards
+            Dashboards s
           </a>
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">
