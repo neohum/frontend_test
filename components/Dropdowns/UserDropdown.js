@@ -1,6 +1,8 @@
 import React from "react";
 import { createPopper } from "@popperjs/core";
 
+import { handleSignout } from "utils/withAuthorization";
+
 const UserDropdown = () => {
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
@@ -44,13 +46,13 @@ const UserDropdown = () => {
         }
       >
         <a
-          href="#pablo"
+          href="/"
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           }
-          onClick={(e) => e.preventDefault()}
+          onClick={handleSignout}
         >
-          Action
+          로그아웃
         </a>
         <a
           href="#pablo"

@@ -6,11 +6,14 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import HeaderStats from "components/Headers/HeaderStats.js";
 import FooterAdmin from "components/Footers/FooterAdmin.js";
+import { withAuthorization } from "utils/withAuthorization"
 
-export default function Admin({ children }) {
+
+
+const Admin = ({ children }) => {
   return (
     <>
-      <Sidebar />
+      <Sidebar />   
       <div className="relative md:ml-64 bg-blueGray-100">
         <AdminNavbar />
         {/* Header */}
@@ -23,3 +26,5 @@ export default function Admin({ children }) {
     </>
   );
 }
+
+export default withAuthorization(Admin)
