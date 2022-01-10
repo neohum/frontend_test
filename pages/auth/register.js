@@ -19,6 +19,7 @@ export default function Register() {
       router.push('/')
     }
   })
+
   const fetchSchoolInfo = async () => {
     const response = await fetch(process.env.NEXT_PUBLIC_NEIS_API + `${schoolName}`)
     const data = await response.json()

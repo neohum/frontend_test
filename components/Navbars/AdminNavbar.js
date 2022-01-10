@@ -1,12 +1,17 @@
 import React from "react";
+import Router from "next/router";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 import cookies from "nookies"
 
 
 export default function Navbar(context) {
+  const { token } = cookies.get(context);
+  if (!token) {
+		Router.push('/auth/login');
+	}
   return (
     <>
-        <div>
+        <div hidden>
           My profile. Cookies:
           <ul>
             {cookies &&
@@ -27,6 +32,7 @@ export default function Navbar(context) {
             onClick={(e) => e.preventDefault()}
           >
             Dashboards
+
           </a>
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">
