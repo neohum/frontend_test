@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router';
 import cookies from 'nookies';
@@ -16,6 +16,12 @@ export default function Login() {
   const [signinInfo, setSigninInfo] = useState(initialState)
   const [error, setError] = useState('')
   const router = useRouter()
+
+  useEffect((context) => {
+    if (cookies.get(context).token) {
+      router.push('/')
+    }
+  })
 
 
   const handleSubmit = async (event) => {

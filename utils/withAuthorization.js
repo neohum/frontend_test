@@ -1,8 +1,7 @@
 
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import cookies from 'nookies';
 import { Component } from 'react'
-
 
 const isAuthenticated = context => {
 	const { token } = cookies.get(context);
@@ -29,14 +28,15 @@ const authenticate = context => {
 	}
 
 	if (!token) {
-		Router.push('/auth/login');
+		useRouter.push('/auth/login');
 	}
 
 	return token;
 };
 
-const handleSignout = () => {
-  cookies.destroy(null, 'token')
+const handleSignout = context => {
+  //cookies.destroy({context}, 'token')
+  cookies.destroy(null, 'token', {path: '/'})
 }
 
 const withAuthorization = WrappedComponent => {
