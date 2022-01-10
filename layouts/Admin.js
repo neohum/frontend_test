@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import cookies from "nookies"
 
 // components
 
@@ -11,6 +13,15 @@ import { withAuthorization } from "utils/withAuthorization"
 
 
 const Admin = ({ children }) => {
+  const { token } = cookies.get(children);
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (!token) {
+      router.push('/auth/login');
+      return <h2>Loading...</h2>
+    }
+  })
   return (
     <>
       <Sidebar />   

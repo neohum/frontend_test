@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import cookies from 'nookies';
 import { useRouter } from 'next/router';
@@ -13,6 +13,13 @@ export default function Register() {
   const [schoolResultError, setSchoolResultError] = useState('')
   const [selectSchool, setSelectSchool] = useState([])
   const router = useRouter()
+
+  useEffect(() => {
+    if (cookies.get().token) {
+      router.push('/')
+    }
+  })
+
   const fetchSchoolInfo = async () => {
     const response = await fetch(process.env.NEXT_PUBLIC_NEIS_API + `${schoolName}`)
     const data = await response.json()
@@ -54,13 +61,25 @@ export default function Register() {
       cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
 			router.replace('/admin/dashboard')
     } catch (error) {
-      setSchoolResultError("서버 에러")
+      //console.log(error);
     }
     
-    
-    
-
   }
+
+  const chkCharCodeEng = (event) => {
+    const regExp = /[^0-9a-zA-Z]/g;
+    const ele = event.target;
+    if (regExp.test(ele.value)) {
+      ele.value = ele.value.replace(regExp, '');
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      fetchSchoolInfo()
+    }
+  }
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -81,7 +100,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      ID
+                      ID(영어와 숫자만 허용)
                     </label>
                     <input
                       type="text"
@@ -89,6 +108,7 @@ export default function Register() {
                       placeholder="ID"
                       id="schoolId"
                       name="schoolId"
+                      onKeyUp={chkCharCodeEng}
                       required
                     />
                   </div>
@@ -98,7 +118,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Password
+                      Password(8문자 이상)
                     </label>
                     <input
                       type="password"
@@ -140,6 +160,7 @@ export default function Register() {
                       onChange={e => setSchoolName(e.target.value)}
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="신청학교명"
+                      onKeyPress={handleKeyPress}
                       required
                       />    
                   </div>
@@ -153,9 +174,14 @@ export default function Register() {
                       검색
                     </button>
                   </div>
-                  <div>
+                  {schoolResultError && (
+                    <div
+                    className="bg-red-400 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                  >
                     {schoolResultError}
                   </div>
+                  )}
+                  
 
                   <div>
                     {schoolResult.map(result => {
