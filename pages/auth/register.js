@@ -13,13 +13,11 @@ export default function Register() {
   const [schoolResultError, setSchoolResultError] = useState('')
   const [selectSchool, setSelectSchool] = useState([])
   const router = useRouter()
-
   useEffect(() => {
     if (cookies.get().token) {
       router.push('/')
     }
   })
-
   const fetchSchoolInfo = async () => {
     const response = await fetch(process.env.NEXT_PUBLIC_NEIS_API + `${schoolName}`)
     const data = await response.json()
@@ -63,7 +61,6 @@ export default function Register() {
     } catch (error) {
       //console.log(error);
     }
-    
   }
 
   const chkCharCodeEng = (event) => {
@@ -78,6 +75,24 @@ export default function Register() {
     if (event.key === "Enter") {
       fetchSchoolInfo()
     }
+  }
+
+  const passwordChk = (event) => {
+    const number = /[0-9]/g
+    const character = /[0-9a-zA-Z_]/g
+    const value = event.target.value;
+
+    setSchoolResultError('')
+
+    if (number.test(value) === false) {
+      setSchoolResultError("1개 이상의 숫자가 포함되어야 합니다.")
+    }
+    if (character.test(value) === false) {
+      setSchoolResultError("1개 이상의 문자가 포함되어야 합니다.")
+    }
+    if (value.length < 8 || value.length > 16) {
+      setSchoolResultError("비밀번호는 8자 이상 16자 이하여야 합니다.")
+    }   
   }
 
   return (
@@ -118,7 +133,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Password(8문자 이상)
+                      Password(8문자 이상 16자리 이하, 최소 1개의 숫자와 문자 포함)
                     </label>
                     <input
                       type="password"
@@ -126,6 +141,7 @@ export default function Register() {
                       placeholder="Password"
                       id="password"
                       name="password"
+                      onBlur={passwordChk}
                       required
                     />
                   </div>
@@ -152,7 +168,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      신청학교명 검색
+                      신청학교명 검색(한글만 입력 예: 학교초)
                     </label>
                       <input
                       type="text"
