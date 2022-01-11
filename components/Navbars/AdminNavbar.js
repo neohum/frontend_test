@@ -1,12 +1,17 @@
 import React from "react";
+import Router from "next/router";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 import cookies from "nookies"
 
 
 export default function Navbar(context) {
+  const { token } = cookies.get(context);
+  if (!token) {
+		Router.push('/auth/login');
+	}
   return (
     <>
-        <div>
+        <div hidden>
           My profile. Cookies:
           <ul>
             {cookies &&
