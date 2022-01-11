@@ -15,7 +15,7 @@ export default function Register() {
   const router = useRouter()
   useEffect(() => {
     if (cookies.get().token) {
-      router.push('/')
+      router.replace('/')
     }
   })
   const fetchSchoolInfo = async () => {
@@ -80,6 +80,7 @@ export default function Register() {
   const passwordChk = (event) => {
     const number = /[0-9]/g
     const character = /[0-9a-zA-Z_]/g
+    const space = /\s/g
     const value = event.target.value;
 
     setSchoolResultError('')
@@ -92,8 +93,21 @@ export default function Register() {
     }
     if (value.length < 8 || value.length > 16) {
       setSchoolResultError("비밀번호는 8자 이상 16자 이하여야 합니다.")
-    }   
+    }
+    if (value.match(space)) {
+      setSchoolResultError("공백이 존재합니다. 비밀번호를 다시 설정해주세요")
+    }
   }
+
+  const isEmail = (event) => {
+    const value = event.target.value
+    const emailRegex =
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    setSchoolResultError('')
+    if (emailRegex.test(value) === false) {
+      setSchoolResultError("이메일 형식이 잘못되었습니다.")
+    }
+  };
 
   return (
     <>
@@ -159,6 +173,7 @@ export default function Register() {
                       placeholder="Email"
                       id="email"
                       name="email"
+                      onBlur={isEmail}
                       required
                     />
                   </div>
