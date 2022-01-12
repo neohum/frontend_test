@@ -62,6 +62,15 @@ export default function Navbar(props) {
               </li>
               <li className="mr-3">
               { isAuthenticated() && (
+                <Link href="/admin/dashboard">
+                  <a className="inline-block py-2 px-4 text-white font-bold no-underline">
+                    dashboard
+                </a>
+                </Link>
+                )}
+              </li>
+              <li className="mr-3">
+              { isAuthenticated() && (
                 <Link href="/">
                   <a
                   className="inline-block py-2 px-4 text-white font-bold no-underline"

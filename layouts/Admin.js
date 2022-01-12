@@ -8,7 +8,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import HeaderStats from "components/Headers/HeaderStats.js";
 import FooterAdmin from "components/Footers/FooterAdmin.js";
-import { withAuthorization } from "utils/withAuthorization"
+import { withAuthorization } from "utils/withAuthorization";
 
 
 
@@ -18,7 +18,7 @@ const Admin = ({ children }) => {
   
   useEffect(() => {
     if (!token) {
-      router.push('/auth/login');
+      router.replace('/auth/login');
       return <h2>Loading...</h2>
     }
   })
