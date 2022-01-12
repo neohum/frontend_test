@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import cookies from 'nookies';
+import { useRouter } from 'next/router';
 
 // layout for page
 
@@ -9,6 +12,12 @@ export default function Register() {
   const [schoolResult, setSchoolResult] = useState([])
   const [schoolResultError, setSchoolResultError] = useState('')
   const [selectSchool, setSelectSchool] = useState([])
+  const router = useRouter()
+  useEffect(() => {
+    if (cookies.get().token) {
+      router.replace('/')
+    }
+  })
   const fetchSchoolInfo = async () => {
     const response = await fetch(process.env.NEXT_PUBLIC_NEIS_API + `${schoolName}`)
     const data = await response.json()
@@ -46,15 +55,60 @@ export default function Register() {
       console.log(data);
       if (data.code === 400) {
             setSchoolResultError(data.message)
-          }
+      }
+      cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
+			router.replace('/admin/dashboard')
     } catch (error) {
-      setSchoolResultError("서버 에러")
+      //console.log(error);
     }
-    
-    
-    
-
   }
+
+  const chkCharCodeEng = (event) => {
+    const regExp = /[^0-9a-zA-Z]/g;
+    const ele = event.target;
+    if (regExp.test(ele.value)) {
+      ele.value = ele.value.replace(regExp, '');
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      fetchSchoolInfo()
+    }
+  }
+
+  const passwordChk = (event) => {
+    const number = /[0-9]/g
+    const character = /[0-9a-zA-Z_]/g
+    const space = /\s/g
+    const value = event.target.value;
+
+    setSchoolResultError('')
+
+    if (number.test(value) === false) {
+      setSchoolResultError("1개 이상의 숫자가 포함되어야 합니다.")
+    }
+    if (character.test(value) === false) {
+      setSchoolResultError("1개 이상의 문자가 포함되어야 합니다.")
+    }
+    if (value.length < 8 || value.length > 16) {
+      setSchoolResultError("비밀번호는 8자 이상 16자 이하여야 합니다.")
+    }
+    if (value.match(space)) {
+      setSchoolResultError("공백이 존재합니다. 비밀번호를 다시 설정해주세요")
+    }
+  }
+
+  const isEmail = (event) => {
+    const value = event.target.value
+    const emailRegex =
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    setSchoolResultError('')
+    if (emailRegex.test(value) === false) {
+      setSchoolResultError("이메일 형식이 잘못되었습니다.")
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -75,7 +129,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      ID
+                      ID(영어와 숫자만 허용)
                     </label>
                     <input
                       type="text"
@@ -83,6 +137,7 @@ export default function Register() {
                       placeholder="ID"
                       id="schoolId"
                       name="schoolId"
+                      onKeyUp={chkCharCodeEng}
                       required
                     />
                   </div>
@@ -92,7 +147,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Password
+                      Password(8문자 이상 16자리 이하, 최소 1개의 숫자와 문자 포함)
                     </label>
                     <input
                       type="password"
@@ -100,6 +155,7 @@ export default function Register() {
                       placeholder="Password"
                       id="password"
                       name="password"
+                      onBlur={passwordChk}
                       required
                     />
                   </div>
@@ -117,6 +173,7 @@ export default function Register() {
                       placeholder="Email"
                       id="email"
                       name="email"
+                      onBlur={isEmail}
                       required
                     />
                   </div>
@@ -126,7 +183,7 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      신청학교명 검색
+                      신청학교명 검색(한글만 입력 예: 학교초)
                     </label>
                       <input
                       type="text"
@@ -134,6 +191,7 @@ export default function Register() {
                       onChange={e => setSchoolName(e.target.value)}
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="신청학교명"
+                      onKeyPress={handleKeyPress}
                       required
                       />    
                   </div>
@@ -147,9 +205,14 @@ export default function Register() {
                       검색
                     </button>
                   </div>
-                  <div>
+                  {schoolResultError && (
+                    <div
+                    className="bg-red-400 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                  >
                     {schoolResultError}
                   </div>
+                  )}
+                  
 
                   <div>
                     {schoolResult.map(result => {
