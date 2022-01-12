@@ -10,8 +10,6 @@ import HeaderStats from "components/Headers/HeaderStats.js";
 import FooterAdmin from "components/Footers/FooterAdmin.js";
 import { withAuthorization } from "utils/withAuthorization";
 
-
-
 const Admin = ({ children }) => {
   const { token } = cookies.get(children);
   const router = useRouter();
