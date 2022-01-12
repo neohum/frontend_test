@@ -10,14 +10,13 @@ import HeaderStats from "components/Headers/HeaderStats.js";
 import FooterAdmin from "components/Footers/FooterAdmin.js";
 import { withAuthorization } from "utils/withAuthorization";
 
-
 const Admin = ({ children }) => {
   const { token } = cookies.get(children);
   const router = useRouter();
   
   useEffect(() => {
     if (!token) {
-      router.push('/auth/login');
+      router.replace('/auth/login');
       return <h2>Loading...</h2>
     }
   })
