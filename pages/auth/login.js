@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/router';
+import { useRecoilState } from "recoil";
+import { userData } from "states/";
 import cookies from 'nookies';
 
 // layout for page
@@ -16,6 +18,7 @@ export default function Login() {
   const [signinInfo, setSigninInfo] = useState(initialState)
   const [error, setError] = useState('')
   const router = useRouter()
+  const [uData, setUdata] = useRecoilState(userData)
 
   useEffect((context) => {
     if (cookies.get(context).token) {
@@ -45,6 +48,7 @@ export default function Login() {
         })
       })
       const data = await response.json()
+      setUdata(data)
       console.log(data)
       if (data.code === 401) {
           setError(data.message)
