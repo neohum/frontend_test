@@ -99,14 +99,35 @@ export default function Register() {
     }
   }
 
-  const isEmail = (event) => {
+  const isEmail = async (event) => {
     const value = event.target.value
     const emailRegex =
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
     setSchoolResultError('')
     if (emailRegex.test(value) === false) {
       setSchoolResultError("이메일 형식이 잘못되었습니다.")
+      return
     }
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_SCHOOLERP_API + 'auth/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: value,
+        })
+      })
+      const data = await response.json()
+      if (data.code === 400) {
+        setSchoolResultError(data.message)
+        event.target.value = value.replace(emailRegex, '');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
   };
 
   return (
