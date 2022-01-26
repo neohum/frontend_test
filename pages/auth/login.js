@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useRecoilState } from "recoil";
 import { userData } from "states/";
-
 import cookies from 'nookies';
 
 // layout for page
@@ -21,11 +20,11 @@ export default function Login() {
   const router = useRouter()
   const [uData, setUdata] = useRecoilState(userData)
 
-  useEffect((context) => {
-    if (cookies.get(context).token) {
-      router.push('/')
-    }
-  })
+  // useEffect((context) => {
+  //   if (cookies.get(context).token) {
+  //     router.push('/')
+  //   }
+  // })
 
 
   const handleSubmit = async (event) => {
@@ -49,12 +48,17 @@ export default function Login() {
         })
       })
       const data = await response.json()
-      setUdata(data)
+      setUdata(data.user)
       console.log(data)
       if (data.code === 401) {
           setError(data.message)
         }
-      cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
+    cookies.set(null, 'token', data.tokens.access.token, { path: '/' })
+    cookies.set(null, 'refresh_token', data.tokens.refresh.token, { path: '/' })
+    cookies.set(null, 'uid', data.user.id, { path: '/' })
+    if (data.user.managerId) {
+      cookies.set(null, 'gid', data.user.managerId, { path: '/' })
+    }
       const { plannedRoute } = cookies.get()
       console.log(cookies.get());
 			const parsedPlannedRoute = plannedRoute && JSON.parse(plannedRoute)

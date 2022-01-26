@@ -35,8 +35,10 @@ const authenticate = context => {
 };
 
 const handleSignout = context => {
-  //cookies.destroy({context}, 'token')
-  cookies.destroy(null, 'token', {path: '/'})
+  cookies.destroy(null, 'token', { path: '/' })
+  cookies.destroy(null, 'refresh_token', { path: '/' })
+  cookies.destroy(null, 'uid', { path: '/' })
+  cookies.destroy(null, 'gid', { path: '/' })
 }
 
 const withAuthorization = WrappedComponent => {
