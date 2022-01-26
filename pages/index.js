@@ -1,5 +1,8 @@
 import React from "react";
 import Link from "next/link";
+import { useRecoilState } from "recoil";
+import { userData } from "states/";
+import cookies from 'nookies';
 
 // components
 
@@ -7,6 +10,21 @@ import Navbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footers/Footer.js";
 
 export default function Landing() {
+  const [uData, setUdata] = useRecoilState(userData)
+  const { token, uid } = cookies.get()
+  if (uData) {
+    fetch(process.env.NEXT_PUBLIC_SCHOOLERP_API + 'admin/' + uid, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => setUdata())
+    
+  }
+  console.log(uData);
   return (
     <>
       <Navbar transparent />
@@ -36,6 +54,7 @@ export default function Landing() {
                     using Notus NextJS. It features multiple CSS components
                     based on the Tailwind CSS design system.
                   </p>
+                  {uData && uData.schoolName}
                 </div>
               </div>
             </div>

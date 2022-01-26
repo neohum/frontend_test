@@ -18,9 +18,10 @@ export default function Navbar(context) {
             href="#pablo"
             onClick={(e) => e.preventDefault()}
           >
-            {uData.user.schoolName}-{
-              uData.user.role === "schoolAdmin" ? "관리자" : "사용자"
+            {uData.schoolName}-{
+              uData.role === "schoolAdmin" ? "관리자" : "사용자"
             }님 반갑습니다.
+            {console.log(uData.schoolName)}
           </div>
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">
